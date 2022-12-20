@@ -64,27 +64,56 @@ public class ModifyPart implements Initializable {
         }
     }
 
-    public void onSave(ActionEvent actionEvent) {
-        // ADD - Check that fields are valid before adding to table
-
-        selectedPart.setName(partName.getText());
-        selectedPart.setPrice(Double.parseDouble(partPrice.getText()));
-        selectedPart.setStock(Integer.parseInt(partStock.getText()));
-        selectedPart.setMin(Integer.parseInt(partMin.getText()));
-        selectedPart.setMax(Integer.parseInt(partMax.getText()));
-
-        if(isOutsourced){
-            ((Outsourced)selectedPart).setCompanyName(partSource.getText());
-        }
-        else {
-            ((InHouse)selectedPart).setMachineID(Integer.parseInt(partSource.getText()));
-        }
-
+    public void onSave(ActionEvent actionEvent) throws IOException {
         try {
-            returnToMain(actionEvent);
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Error: Returning to Main Screen");
-            e.printStackTrace();
+            int tempMin = Integer.parseInt(partMin.getText());
+            int tempMax = Integer.parseInt(partMax.getText());
+            int tempStock = Integer.parseInt(partStock.getText());
+
+            if (tempMin > tempMax || tempStock < tempMin || tempStock > tempMax) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialogue");
+                alert.setHeaderText("Invalid Entry");
+                alert.setContentText("Part Inventory must between \"Min\" and \"Max\"\n" +
+                        "\"Min\" must be less than or equal to \"Max\"");
+                alert.showAndWait();
+            } else {
+                selectedPart.setName(partName.getText());
+                selectedPart.setPrice(Double.parseDouble(partPrice.getText()));
+                selectedPart.setStock(Integer.parseInt(partStock.getText()));
+                selectedPart.setMin(Integer.parseInt(partMin.getText()));
+                selectedPart.setMax(Integer.parseInt(partMax.getText()));
+
+                if (isOutsourced) {
+                    try {
+                        ((Outsourced) selectedPart).setCompanyName(partSource.getText());
+                        returnToMain(actionEvent);
+                    } catch (Exception e) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error Dialogue");
+                        alert.setHeaderText("Invalid Entry");
+                        alert.setContentText("Company Name is not a valid format");
+                        alert.showAndWait();
+                    }
+                } else {
+                    try {
+                        ((InHouse) selectedPart).setMachineID(Integer.parseInt(partSource.getText()));
+                        returnToMain(actionEvent);
+                    } catch (Exception e){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error Dialogue");
+                        alert.setHeaderText("Invalid Entry");
+                        alert.setContentText("Part ID is not a valid format");
+                        alert.showAndWait();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("Invalid Entry");
+            alert.setContentText("At least one attribute is formatted incorrectly or missing");
+            alert.showAndWait();
         }
     }
 

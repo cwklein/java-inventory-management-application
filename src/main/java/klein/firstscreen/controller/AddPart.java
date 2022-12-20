@@ -30,33 +30,59 @@ public class AddPart {
     public TextField partSource;
     public Boolean isOutsourced = false;
 
-    public void onSave(ActionEvent actionEvent) {
+    public void onSave(ActionEvent actionEvent) throws IOException {
         // ADD - Check that fields are valid before adding to table
-
-        String name = partName.getText();
-        double price = Double.parseDouble(partPrice.getText());
-        int stock = Integer.parseInt(partStock.getText());
-        int min = Integer.parseInt(partMin.getText());
-        int max = Integer.parseInt(partMax.getText());
-
-        if(isOutsourced){
-            String company = partSource.getText();
-
-            Outsourced newPart = new Outsourced (Inventory.getPartID(), name, price, stock, min, max, company);
-            Inventory.addPart(newPart);
-        }
-        else {
-            int machID = Integer.parseInt(partSource.getText());
-
-            InHouse newPart = new InHouse(Inventory.getPartID(), name, price, stock, min, max, machID);
-            Inventory.addPart(newPart);
-        }
-
         try {
-            returnToMain(actionEvent);
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Error: Returning to Main Screen");
-            e.printStackTrace();
+            String name = partName.getText();
+            double price = Double.parseDouble(partPrice.getText());
+            int min = Integer.parseInt(partMin.getText());
+            int max = Integer.parseInt(partMax.getText());
+            int stock = Integer.parseInt(partStock.getText());
+
+            if (stock > max || stock < min || min > max) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialogue");
+                alert.setHeaderText("Invalid Entry");
+                alert.setContentText("Part Inventory must between \"Min\" and \"Max\"\n" +
+                        "\"Min\" must be less than or equal to \"Max\"");
+                alert.showAndWait();
+            } else {
+                if (isOutsourced) {
+                    try {
+                        String company = partSource.getText();
+
+                        Outsourced newPart = new Outsourced(Inventory.getPartID(), name, price, stock, min, max, company);
+                        Inventory.addPart(newPart);
+                        returnToMain(actionEvent);
+                    } catch (NumberFormatException e) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error Dialogue");
+                        alert.setHeaderText("Invalid Entry");
+                        alert.setContentText("Company Name is not a valid format");
+                        alert.showAndWait();
+                    }
+                } else {
+                    try {
+                        int machID = Integer.parseInt(partSource.getText());
+
+                        InHouse newPart = new InHouse(Inventory.getPartID(), name, price, stock, min, max, machID);
+                        Inventory.addPart(newPart);
+                        returnToMain(actionEvent);
+                    } catch (NumberFormatException e) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error Dialogue");
+                        alert.setHeaderText("Invalid Entry");
+                        alert.setContentText("Part ID is not a valid format");
+                        alert.showAndWait();
+                    }
+                }
+            }
+        } catch(Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("Invalid Entry");
+            alert.setContentText("At least one attribute is formatted incorrectly or missing");
+            alert.showAndWait();
         }
     }
 

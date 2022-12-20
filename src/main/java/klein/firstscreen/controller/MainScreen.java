@@ -9,10 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
@@ -21,6 +18,7 @@ import klein.firstscreen.main.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -94,13 +92,32 @@ public class MainScreen implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error: You must first select a part to modify");
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("No part selected");
+            alert.setContentText("You must first select a part in order to modify it");
+            alert.showAndWait();
         }
     }
 
     public void deletePart(ActionEvent actionEvent) {
-        Inventory.getAllParts().remove(selectedPart);
+        try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Delete");
+            alert.setContentText("Are you sure you want to delete: " + selectedPart.getName());
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                Inventory.getAllParts().remove(selectedPart);
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("No part selected");
+            alert.setContentText("You must first select a part in order to delete it");
+            alert.showAndWait();
+        }
     }
 
     public void addProduct(ActionEvent actionEvent) throws IOException {
@@ -113,16 +130,40 @@ public class MainScreen implements Initializable {
     }
 
     public void updateProduct(ActionEvent actionEvent) throws IOException{
-        Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/modifyProduct.fxml"));
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        Scene scene = new Scene(parent);
-        stage.setTitle("Modify Product: " + selectedProduct.getName());
-        stage.setScene(scene);
-        stage.show();
+        try {
+            Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/modifyProduct.fxml"));
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(parent);
+            stage.setTitle("Modify Product: " + selectedProduct.getName());
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("No product selected");
+            alert.setContentText("You must first select a product in order to modify it");
+            alert.showAndWait();
+        }
     }
 
-    public void deleteProduct(ActionEvent actionEvent) {
-        Inventory.getAllProducts().remove(selectedProduct);
+    public void deleteProduct(ActionEvent actionEvent) throws IOException {
+        try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Delete");
+            alert.setContentText("Are you sure you want to delete: " + selectedProduct.getName());
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                Inventory.getAllProducts().remove(selectedProduct);
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("No product selected");
+            alert.setContentText("You must first select a product in order to delete it");
+            alert.showAndWait();
+        }
     }
 
     public void closeProgram(ActionEvent actionEvent) {
@@ -146,16 +187,23 @@ public class MainScreen implements Initializable {
     }
 
     public void lookupProduct(ActionEvent actionEvent) {
-        String searchName = productSearch.getText();
+        try{String searchName = productSearch.getText();
 
-        ObservableList<Product> returnedProducts = searchByProductName(searchName);
+            ObservableList<Product> returnedProducts = searchByProductName(searchName);
 
-        if (returnedProducts.size() == 0) {
-            int searchID = Integer.parseInt(searchName);
-            returnedProducts.add(searchByProductID(searchID));
+            if (returnedProducts.size() == 0) {
+                int searchID = Integer.parseInt(searchName);
+                returnedProducts.add(searchByProductID(searchID));
+            }
+
+            prodTableView.setItems(returnedProducts);
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("No search results");
+            alert.setContentText("No products match your current search criteria");
+            alert.showAndWait();
         }
-
-        prodTableView.setItems(returnedProducts);
     }
 
     private ObservableList<Product> searchByProductName(String partialName) {
@@ -184,16 +232,24 @@ public class MainScreen implements Initializable {
     }
 
     public void lookupPart(ActionEvent actionEvent) {
-        String searchName = partSearch.getText();
+        try {
+            String searchName = partSearch.getText();
 
-        ObservableList<Part> returnedParts = searchByPartName(searchName);
+            ObservableList<Part> returnedParts = searchByPartName(searchName);
 
-        if (returnedParts.size() == 0) {
-            int searchID = Integer.parseInt(searchName);
-            returnedParts.add(searchByPartID(searchID));
+            if (returnedParts.size() == 0) {
+                int searchID = Integer.parseInt(searchName);
+                returnedParts.add(searchByPartID(searchID));
+            }
+
+            partTableView.setItems(returnedParts);
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("No search results");
+            alert.setContentText("No parts match your current search criteria");
+            alert.showAndWait();
         }
-
-        partTableView.setItems(returnedParts);
     }
 
     private ObservableList<Part> searchByPartName(String partialName) {

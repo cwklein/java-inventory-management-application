@@ -67,21 +67,35 @@ public class ModifyProduct implements Initializable {
         mainPartPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
 
-    public void onSave(ActionEvent actionEvent) {
-        // ADD - Check that fields are valid before adding to table
+    public void onSave(ActionEvent actionEvent) throws IOException {
         // ADD - Create relationship between 'associated parts' and 'products'
-
-        selectedProduct.setName(prodName.getText());
-        selectedProduct.setPrice(Double.parseDouble(prodPrice.getText()));
-        selectedProduct.setStock(Integer.parseInt(prodStock.getText()));
-        selectedProduct.setMin(Integer.parseInt(prodMin.getText()));
-        selectedProduct.setMax(Integer.parseInt(prodMax.getText()));
-
         try {
-            returnToMain(actionEvent);
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Error: Returning to Main Screen");
-            e.printStackTrace();
+            int tempMin = Integer.parseInt(prodMin.getText());
+            int tempMax = Integer.parseInt(prodMax.getText());
+            int tempStock = Integer.parseInt(prodStock.getText());
+
+            if (tempMin > tempMax || tempStock < tempMin || tempStock > tempMax) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialogue");
+                alert.setHeaderText("Invalid Entry");
+                alert.setContentText("Part Inventory must between \"Min\" and \"Max\"\n" +
+                        "\"Min\" must be less than or equal to \"Max\"");
+                alert.showAndWait();
+            } else {
+                selectedProduct.setName(prodName.getText());
+                selectedProduct.setPrice(Double.parseDouble(prodPrice.getText()));
+                selectedProduct.setStock(Integer.parseInt(prodStock.getText()));
+                selectedProduct.setMin(Integer.parseInt(prodMin.getText()));
+                selectedProduct.setMax(Integer.parseInt(prodMax.getText()));
+
+                returnToMain(actionEvent);
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialogue");
+            alert.setHeaderText("Invalid Entry");
+            alert.setContentText("At least one attribute is formatted incorrectly or missing");
+            alert.showAndWait();
         }
     }
 
