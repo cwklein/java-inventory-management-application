@@ -16,7 +16,7 @@
          </font>
       </Label>
       <Label layoutX="92.0" layoutY="114.0" text="ID" />
-      <TextField fx:id="prodID" layoutX="163.0" layoutY="110.0" prefHeight="25.0" prefWidth="182.0" disable="true" promptText="Auto Gen- Disabled" />
+      <TextField fx:id="prodID" disable="true" layoutX="163.0" layoutY="110.0" prefHeight="25.0" prefWidth="182.0" promptText="Auto Gen- Disabled" />
       <Label layoutX="92.0" layoutY="156.0" text="Name" />
       <TextField fx:id="prodName" layoutX="163.0" layoutY="152.0" prefHeight="25.0" prefWidth="182.0" />
       <Label layoutX="92.0" layoutY="199.0" text="Inventory" />
@@ -29,24 +29,24 @@
       <TextField fx:id="prodMin" layoutX="276.0" layoutY="283.0" prefHeight="25.0" prefWidth="70.0" />
       <Button fx:id="saveButton" layoutX="563.0" layoutY="392.0" mnemonicParsing="false" onAction="#onSave" text="Save" />
       <Button fx:id="cancelButton" layoutX="622.0" layoutY="392.0" mnemonicParsing="false" onAction="#returnToMain" text="Cancel" />
-      <TextField layoutX="492.0" layoutY="32.0" prefHeight="25.0" prefWidth="182.0" promptText="Search by Part ID or Part Name" />
-      <TableView fx:id="mainPartTableView" layoutX="372.0" layoutY="71.0" prefHeight="112.0" prefWidth="302.0">
+      <TextField fx:id="partSearch" onAction="#lookupPart" layoutX="492.0" layoutY="32.0" prefHeight="25.0" prefWidth="182.0" promptText="Search by Part ID or Part Name" />
+      <TableView fx:id="mainPartTableView" onMouseClicked="#selectPartToAdd" layoutX="372.0" layoutY="71.0" prefHeight="112.0" prefWidth="302.0">
         <columns>
           <TableColumn fx:id="mainPartIDColumn" prefWidth="46.0" text="Part ID" />
           <TableColumn fx:id="mainPartNameColumn" prefWidth="76.0" text="Part Name" />
-            <TableColumn fx:id="mainPartInvColumn" prefWidth="83.0" text="Inventory" />
+            <TableColumn fx:id="mainPartStockColumn" prefWidth="83.0" text="Inventory" />
             <TableColumn fx:id="mainPartPriceColumn" prefWidth="95.0" text="Cost per Unit" />
         </columns>
       </TableView>
-      <TableView layoutX="372.0" layoutY="231.0" prefHeight="112.0" prefWidth="302.0">
+      <TableView fx:id="assocPartTableView" onMouseClicked="#selectPartToRemove" layoutX="372.0" layoutY="231.0" prefHeight="112.0" prefWidth="302.0">
          <columns>
-            <TableColumn prefWidth="46.0" text="Part ID" />
-            <TableColumn prefWidth="76.0" text="Part Name" />
-            <TableColumn prefWidth="83.0" text="Inventory" />
-            <TableColumn prefWidth="95.0" text="Cost per Unit" />
+            <TableColumn fx:id="assocPartIDColumn" prefWidth="46.0" text="Part ID" />
+            <TableColumn fx:id="assocPartNameColumn" prefWidth="76.0" text="Part Name" />
+            <TableColumn fx:id="assocPartStockColumn" prefWidth="83.0" text="Inventory" />
+            <TableColumn fx:id="assocPartPriceColumn" prefWidth="95.0" text="Cost per Unit" />
          </columns>
       </TableView>
-      <Button layoutX="636.0" layoutY="195.0" mnemonicParsing="false" text="Add" />
-      <Button layoutX="530.0" layoutY="353.0" mnemonicParsing="false" text="Remove Associated Part" />
+      <Button layoutX="636.0" layoutY="195.0" mnemonicParsing="false" onAction="#addAssocPart" text="Add" />
+      <Button layoutX="530.0" layoutY="353.0" mnemonicParsing="false" onAction="#removeAssocPart" text="Remove Associated Part" />
    </children>
 </AnchorPane>

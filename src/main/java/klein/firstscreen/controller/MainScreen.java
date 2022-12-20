@@ -147,21 +147,31 @@ public class MainScreen implements Initializable {
     }
 
     public void deleteProduct(ActionEvent actionEvent) throws IOException {
-        try {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm Delete");
-            alert.setContentText("Are you sure you want to delete: " + selectedProduct.getName());
+        if(selectedProduct.getAllParts().size() == 0) {
 
-            Optional<ButtonType> result = alert.showAndWait();
+            try {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirm Delete");
+                alert.setContentText("Are you sure you want to delete: " + selectedProduct.getName());
 
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                Inventory.getAllProducts().remove(selectedProduct);
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    Inventory.getAllProducts().remove(selectedProduct);
+                }
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialogue");
+                alert.setHeaderText("No product selected");
+                alert.setContentText("You must first select a product in order to delete it");
+                alert.showAndWait();
             }
-        } catch (Exception e) {
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialogue");
-            alert.setHeaderText("No product selected");
-            alert.setContentText("You must first select a product in order to delete it");
+            alert.setHeaderText("Product contains associated parts");
+            alert.setContentText("The selected product is associated with one or more parts\n" +
+                    "If you would like to delete this, please first modify and remove any associated parts.");
             alert.showAndWait();
         }
     }
@@ -187,7 +197,8 @@ public class MainScreen implements Initializable {
     }
 
     public void lookupProduct(ActionEvent actionEvent) {
-        try{String searchName = productSearch.getText();
+        try{
+            String searchName = productSearch.getText();
 
             ObservableList<Product> returnedProducts = searchByProductName(searchName);
 

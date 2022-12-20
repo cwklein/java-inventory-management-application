@@ -23,12 +23,12 @@ public class C482_Project extends Application  {
 
     public static void addTestData() {
         //Populating the Part and Product tables with sample information
-        InHouse samplePart1 = new InHouse(Inventory.getPartID(), "Brakes",15.00, 10,10, 20, 101);
-        Outsourced samplePart2 = new Outsourced(Inventory.getPartID(), "Wheel",11.00, 16,10, 20, "ABC Company");
+        InHouse samplePart1 = new InHouse(Inventory.getPartID(), "Brakes",15.00, 20,10, 20, 101);
+        Outsourced samplePart2 = new Outsourced(Inventory.getPartID(), "Wheel",11.00, 15,10, 20, "ABC Company");
         InHouse samplePart3 = new InHouse(Inventory.getPartID(), "Seat",15.00, 10,10, 20, 102);
 
-        Product sampleProduct1 = new Product(Inventory.getProdID(),"Giant Bike", 299.99, 5, 2, 10);
-        Product sampleProduct2 = new Product(Inventory.getProdID(), "Tricycle", 99.99, 3, 2, 10);
+        Product sampleProduct1 = new Product(Inventory.getProdID(),"Giant Bike", 299.99, 10, 2, 10);
+        Product sampleProduct2 = new Product(Inventory.getProdID(), "Tricycle", 99.99, 2, 2, 10);
 
         Inventory.addPart(samplePart1);
         Inventory.addPart(samplePart2);
@@ -36,6 +36,9 @@ public class C482_Project extends Application  {
 
         Inventory.addProduct(sampleProduct1);
         Inventory.addProduct(sampleProduct2);
+
+        sampleProduct1.addPart(samplePart1);
+        sampleProduct2.addPart(samplePart2);
     }
 
     public static void main(String[] args) {

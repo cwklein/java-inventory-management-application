@@ -1,5 +1,8 @@
 package klein.firstscreen.main;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 /**
  *
  * @author Colby Klein
@@ -11,6 +14,8 @@ public class Product {
     private int stock;
     private int min;
     private int max;
+    private ObservableList<Part> associatedParts = FXCollections.observableArrayList();
+
     public Product(int id, String name, double price, int stock, int min, int max) {
         this.id = id;
         this.name = name;
@@ -102,6 +107,27 @@ public class Product {
      */
     public void setMax(int max) {
         this.max = max;
+    }
+
+    /**
+     * @param part the part to add to associatedParts Array
+     */
+    public void addPart(Part part){
+        associatedParts.add(part);
+    }
+
+    /**
+     * @return the partList Array
+     */
+    public ObservableList<Part> getAllParts() {
+        return associatedParts;
+    }
+
+    /**
+     * @param part the part to be removed from the associatedParts Array
+     */
+    public void removePart(Part part) {
+        associatedParts.remove(part);
     }
 
 }
