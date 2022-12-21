@@ -1,4 +1,4 @@
-package klein.firstscreen.controller;
+package klein.c482_project.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -9,14 +9,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import klein.firstscreen.main.InHouse;
-import klein.firstscreen.main.Inventory;
-import klein.firstscreen.main.Outsourced;
+import klein.c482_project.model.InHouse;
+import klein.c482_project.model.Inventory;
+import klein.c482_project.model.Outsourced;
 
 import java.io.IOException;
 
 /**
- *
+ * Controller for addPart View.
  * @author Colby Klein
  */
 public class AddPart {
@@ -30,8 +30,11 @@ public class AddPart {
     public TextField partSource;
     public Boolean isOutsourced = false;
 
+    /**
+     * Reads through the textFields, validates the user's input and if valid adds the new Part to allParts.
+     * @param actionEvent is related to clicking the "Save" button.
+     */
     public void onSave(ActionEvent actionEvent) throws IOException {
-        // ADD - Check that fields are valid before adding to table
         try {
             String name = partName.getText();
             double price = Double.parseDouble(partPrice.getText());
@@ -86,8 +89,12 @@ public class AddPart {
         }
     }
 
+    /**
+     * Returns the user to the main screen.
+     * @param actionEvent  is related to clicking the "Cancel" button or following the onSave method.
+     */
     public void returnToMain(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/mainScreen.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("/klein/c482_project/view/mainScreen.fxml"));
         Scene scene = new Scene(parent);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Main Screen");
@@ -95,11 +102,19 @@ public class AddPart {
         stage.show();
     }
 
+    /**
+     * Changes window to allow for completion of Outsourced part. Adds a "Company Name" field in place of "Machine ID".
+     * @param actionEvent is related to clicking the "Outsourced" radio button.
+     */
     public void toOutsourced(ActionEvent actionEvent) {
         partSourceLabel.setText("Company Name");
         isOutsourced = true;
     }
 
+    /**
+     * Changes window to allow for completion of InHouse part. Adds a "Machine ID" field in place of "Company Name".
+     * @param actionEvent is related to clicking the "InHouse" radio button.
+     */
     public void toInHouse(ActionEvent actionEvent) {
         partSourceLabel.setText("Machine ID");
         isOutsourced = false;

@@ -1,10 +1,10 @@
-package klein.firstscreen.main;
+package klein.c482_project.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
+ * Maintains the static inventory lists (allParts & allProducts), part and product ID's and related methods.
  * @author Colby Klein
  */
 public class Inventory {

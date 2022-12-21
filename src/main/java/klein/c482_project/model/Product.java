@@ -1,4 +1,4 @@
-package klein.firstscreen.main;
+package klein.c482_project.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

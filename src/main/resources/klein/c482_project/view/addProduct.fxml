@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="450.0" prefWidth="695.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="klein.firstscreen.controller.ModifyProduct">
+<AnchorPane prefHeight="450.0" prefWidth="695.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="klein.c482_project.controller.AddProduct">
    <children>
-      <Label layoutX="55.0" layoutY="57.0" text="Modify Product">
+      <Label layoutX="55.0" layoutY="57.0" text="Add Product">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -34,7 +34,7 @@
         <columns>
           <TableColumn fx:id="mainPartIDColumn" prefWidth="46.0" text="Part ID" />
           <TableColumn fx:id="mainPartNameColumn" prefWidth="76.0" text="Part Name" />
-            <TableColumn fx:id="mainPartStockColumn" prefWidth="83.0" text="Inventory" />
+            <TableColumn fx:id="mainPartInvColumn" prefWidth="83.0" text="Inventory" />
             <TableColumn fx:id="mainPartPriceColumn" prefWidth="95.0" text="Cost per Unit" />
         </columns>
       </TableView>

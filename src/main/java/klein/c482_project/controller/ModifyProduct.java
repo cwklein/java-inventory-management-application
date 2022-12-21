@@ -1,4 +1,4 @@
-package klein.firstscreen.controller;
+package klein.c482_project.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,9 +13,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import klein.firstscreen.main.Inventory;
-import klein.firstscreen.main.Part;
-import klein.firstscreen.main.Product;
+import klein.c482_project.model.Inventory;
+import klein.c482_project.model.Part;
+import klein.c482_project.model.Product;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
- *
+ * Controller for modifyProduct View.
  * @author Colby Klein
  */
 public class ModifyProduct implements Initializable {
@@ -54,9 +54,11 @@ public class ModifyProduct implements Initializable {
     private TableColumn<Part, Double> mainPartPriceColumn;
     public TextField partSearch;
 
+    /**
+     * Initializes the mainPartTableView and assocPartTableViews with corresponding columns and populates textField with data corresponding to selectedProduct.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // ADD - Create relationship between 'associated parts' and 'products'
         selectedProduct = MainScreen.getSelectedProduct();
 
         //Populating fields with info from selected product
@@ -76,7 +78,7 @@ public class ModifyProduct implements Initializable {
         mainPartStockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
         mainPartPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        //
+        //Filling tempParts with current associated parts
         tempParts.addAll(selectedProduct.getAllParts());
 
         //Filling Associated Part Table View
@@ -89,6 +91,10 @@ public class ModifyProduct implements Initializable {
         assocPartPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
 
+    /**
+     * The onSave method reads through the textFields, validates the user's input and if valid changes the allProducts static observableList within Inventory class to reflect any changes made to the Product.
+     * @param actionEvent is related to clicking the "Save" button in the window.
+     */
     public void onSave(ActionEvent actionEvent) throws IOException {
         // ADD - Create relationship between 'associated parts' and 'products'
         try {
@@ -129,9 +135,13 @@ public class ModifyProduct implements Initializable {
         }
     }
 
+    /**
+     * The returnToMain method disregards any inputs within the textFields and returns the user to the main screen.
+     * @param actionEvent  is related to clicking the "Cancel" button in the window.
+     */
     public void returnToMain(ActionEvent actionEvent) throws IOException {
         tempParts.clear();
-        Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/mainScreen.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("/klein/c482_project/view/mainScreen.fxml"));
         Scene scene = new Scene(parent);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Main Screen");
@@ -139,7 +149,10 @@ public class ModifyProduct implements Initializable {
         stage.show();
     }
 
-
+    /**
+     * Changes the mainPartTableView to reflect only those parts whose ID or name match the search criteria.
+     * @param actionEvent is related to pressing enter on the part search bar.
+     */
     public void lookupPart(ActionEvent actionEvent) {
         try {
             String searchName = partSearch.getText();
@@ -188,14 +201,26 @@ public class ModifyProduct implements Initializable {
         return null;
     }
 
+    /**
+     * defines selectedPartToAdd as whichever part has been clicked by the user.
+     * @param mouseEvent is related to whatever part is clicked by the user in mainPartTableView.
+     */
     public void selectPartToAdd(MouseEvent mouseEvent) {
         selectedPartToAdd = mainPartTableView.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * defines selectedPartToRemove as whichever part has been clicked by the user.
+     * @param mouseEvent is related to whatever part is clicked by the user in assocPartTableView.
+     */
     public void selectPartToRemove(MouseEvent mouseEvent) {
         selectedPartToRemove = assocPartTableView.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * Adds selectedPartToAdd to the assocPartTableView.
+     * @param actionEvent is related to clicking the "Add" button.
+     */
     public void addAssocPart(ActionEvent actionEvent) {
         if(tempParts.contains(selectedPartToAdd)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -205,7 +230,7 @@ public class ModifyProduct implements Initializable {
             alert.showAndWait();
         } else {
             try {
-                selectedPartToAdd.getName();
+                selectedPartToAdd.getId();
                 tempParts.add(selectedPartToAdd);
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -217,6 +242,10 @@ public class ModifyProduct implements Initializable {
         }
     }
 
+    /**
+     * Removes selectedPartToRemove from the assocPartTableView.
+     * @param actionEvent is related to clicking the "Remove" button.
+     */
     public void removeAssocPart(ActionEvent actionEvent) {
         try {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

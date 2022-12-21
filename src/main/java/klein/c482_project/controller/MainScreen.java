@@ -1,4 +1,4 @@
-package klein.firstscreen.controller;
+package klein.c482_project.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,19 +11,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import klein.firstscreen.main.*;
+import klein.c482_project.model.Inventory;
+import klein.c482_project.model.Part;
+import klein.c482_project.model.Product;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 /**
- *
+ * Controller for mainScreen View.
  * @author Colby Klein
  */
 public class MainScreen implements Initializable {
@@ -74,8 +74,13 @@ public class MainScreen implements Initializable {
         prodInvColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
         prodPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
+
+    /**
+     * Directs the user to the addPart screen.
+     * @param actionEvent  is related to clicking the "Add" button below Parts Section.
+     */
     public void addPart(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/addPart.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("/klein/c482_project/view/addPart.fxml"));
         Scene scene = new Scene(parent);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Add Part");
@@ -83,9 +88,13 @@ public class MainScreen implements Initializable {
         stage.show();
     }
 
+    /**
+     * Directs the user to the modifyPart screen for whatever Part is currently selected.
+     * @param actionEvent  is related to clicking the "Modify" button below Parts Section.
+     */
     public void updatePart(ActionEvent actionEvent) throws IOException{
         try {
-            Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/modifyPart.fxml"));
+            Parent parent = FXMLLoader.load(getClass().getResource("/klein/c482_project/view/modifyPart.fxml"));
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(parent);
             stage.setTitle("Modify Part: " + selectedPart.getName());
@@ -100,6 +109,10 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * Removes the selectedPart from allParts list.
+     * @param actionEvent  is related to clicking the "Delete" button below Parts Section.
+     */
     public void deletePart(ActionEvent actionEvent) {
         try {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -120,8 +133,12 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * Directs the user to the addProduct screen.
+     * @param actionEvent  is related to clicking the "Add" button below Products Section.
+     */
     public void addProduct(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/addProduct.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("/klein/c482_project/view/addProduct.fxml"));
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(parent);
         stage.setTitle("Add Product");
@@ -129,9 +146,13 @@ public class MainScreen implements Initializable {
         stage.show();
     }
 
+    /**
+     * Directs the user to the modifyProduct screen for whatever Product is currently selected.
+     * @param actionEvent  is related to clicking the "Modify" button below Products Section.
+     */
     public void updateProduct(ActionEvent actionEvent) throws IOException{
         try {
-            Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/modifyProduct.fxml"));
+            Parent parent = FXMLLoader.load(getClass().getResource("/klein/c482_project/view/modifyProduct.fxml"));
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(parent);
             stage.setTitle("Modify Product: " + selectedProduct.getName());
@@ -146,6 +167,10 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * First checks the selectedProducts has no associated parts, then removes the selectedProduct from allProducts list.
+     * @param actionEvent  is related to clicking the "Delete" button below Products Section.
+     */
     public void deleteProduct(ActionEvent actionEvent) throws IOException {
         if(selectedProduct.getAllParts().size() == 0) {
 
@@ -176,26 +201,56 @@ public class MainScreen implements Initializable {
         }
     }
 
+    /**
+     * Confirms that user wants to exit the program and then closes program.
+     * @param actionEvent is related to clicking the "Exit" button.
+     */
     public void closeProgram(ActionEvent actionEvent) {
-        System.exit(0);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Exit");
+        alert.setContentText("Are you sure you want to exit the program?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            System.exit(0);
+        }
     }
 
+    /**
+     * defines selectedPart as whichever part has been clicked by the user.
+     * @param mouseEvent is related to whatever part is clicked by the user in PartTableView.
+     */
     public void selectPart(MouseEvent mouseEvent) {
         selectedPart = partTableView.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * @return the selectedPart
+     */
     public static Part getSelectedPart() {
         return selectedPart;
     }
 
+    /**
+     * defines selectedProduct as whichever product has been clicked by the user.
+     * @param mouseEvent is related to whatever product is clicked by the user in ProdTableView.
+     */
     public void selectProduct(MouseEvent mouseEvent) {
         selectedProduct = prodTableView.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * @return the selectedPart
+     */
     public static Product getSelectedProduct() {
         return selectedProduct;
     }
 
+    /**
+     * Changes the prodTableView to reflect only those products whose ID or name match the search criteria.
+     * @param actionEvent is related to pressing enter on the product search bar.
+     */
     public void lookupProduct(ActionEvent actionEvent) {
         try{
             String searchName = productSearch.getText();
@@ -242,6 +297,10 @@ public class MainScreen implements Initializable {
         return null;
     }
 
+    /**
+     * Changes the partTableView to reflect only those parts whose ID or name match the search criteria.
+     * @param actionEvent is related to pressing enter on the part search bar.
+     */
     public void lookupPart(ActionEvent actionEvent) {
         try {
             String searchName = partSearch.getText();

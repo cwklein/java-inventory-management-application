@@ -1,7 +1,7 @@
-package klein.firstscreen.main;
+package klein.c482_project.model;
 
 /**
- *
+ * An extension of the Part class, adds in a companyName attribute.
  * @author Colby Klein
  */
 public class Outsourced extends Part{

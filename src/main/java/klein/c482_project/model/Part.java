@@ -1,4 +1,4 @@
-package klein.firstscreen.main;
+package klein.c482_project.model;
 /**
  * Supplied class Part.java
  */

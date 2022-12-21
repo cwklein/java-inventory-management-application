@@ -1,4 +1,4 @@
-package klein.firstscreen.controller;
+package klein.c482_project.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -11,17 +11,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import klein.firstscreen.main.InHouse;
-import klein.firstscreen.main.Inventory;
-import klein.firstscreen.main.Outsourced;
-import klein.firstscreen.main.Part;
+import klein.c482_project.model.InHouse;
+import klein.c482_project.model.Inventory;
+import klein.c482_project.model.Outsourced;
+import klein.c482_project.model.Part;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- *
+ * Controller for modifyPart View.
  * @author Colby Klein
  */
 public class ModifyPart implements Initializable {
@@ -38,6 +38,9 @@ public class ModifyPart implements Initializable {
     public RadioButton inHouse;
     public Boolean isOutsourced = false;
 
+    /**
+     * Initializes the textFields with the current values of selectedPart.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -64,13 +67,20 @@ public class ModifyPart implements Initializable {
         }
     }
 
+    /**
+     * The onSave method reads through the textFields, validates the user's input and if valid changes the allParts static observableList within Inventory class to reflect any changes made to the Part.
+     * @param actionEvent is related to clicking the "Save" button in the window.
+     */
     public void onSave(ActionEvent actionEvent) throws IOException {
         try {
-            int tempMin = Integer.parseInt(partMin.getText());
-            int tempMax = Integer.parseInt(partMax.getText());
-            int tempStock = Integer.parseInt(partStock.getText());
+            int id = Integer.parseInt(partID.getText());
+            String name = partName.getText();
+            double price = Double.parseDouble(partPrice.getText());
+            int min = Integer.parseInt(partMin.getText());
+            int max = Integer.parseInt(partMax.getText());
+            int stock = Integer.parseInt(partStock.getText());
 
-            if (tempMin > tempMax || tempStock < tempMin || tempStock > tempMax) {
+            if (stock > max || stock < min || min > max) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Dialogue");
                 alert.setHeaderText("Invalid Entry");
@@ -78,17 +88,15 @@ public class ModifyPart implements Initializable {
                         "\"Min\" must be less than or equal to \"Max\"");
                 alert.showAndWait();
             } else {
-                selectedPart.setName(partName.getText());
-                selectedPart.setPrice(Double.parseDouble(partPrice.getText()));
-                selectedPart.setStock(Integer.parseInt(partStock.getText()));
-                selectedPart.setMin(Integer.parseInt(partMin.getText()));
-                selectedPart.setMax(Integer.parseInt(partMax.getText()));
-
                 if (isOutsourced) {
                     try {
-                        ((Outsourced) selectedPart).setCompanyName(partSource.getText());
+                        String company = partSource.getText();
+
+                        Outsourced newPart = new Outsourced(id, name, price, stock, min, max, company);
+                        Inventory.addPart(newPart);
+                        Inventory.getAllParts().remove(selectedPart);
                         returnToMain(actionEvent);
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error Dialogue");
                         alert.setHeaderText("Invalid Entry");
@@ -97,9 +105,13 @@ public class ModifyPart implements Initializable {
                     }
                 } else {
                     try {
-                        ((InHouse) selectedPart).setMachineID(Integer.parseInt(partSource.getText()));
+                        int machID = Integer.parseInt(partSource.getText());
+
+                        InHouse newPart = new InHouse(id, name, price, stock, min, max, machID);
+                        Inventory.addPart(newPart);
+                        Inventory.getAllParts().remove(selectedPart);
                         returnToMain(actionEvent);
-                    } catch (Exception e){
+                    } catch (NumberFormatException e) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error Dialogue");
                         alert.setHeaderText("Invalid Entry");
@@ -108,7 +120,7 @@ public class ModifyPart implements Initializable {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialogue");
             alert.setHeaderText("Invalid Entry");
@@ -117,8 +129,12 @@ public class ModifyPart implements Initializable {
         }
     }
 
+    /**
+     * The returnToMain method disregards any inputs within the textFields and returns the user to the main screen.
+     * @param actionEvent  is related to clicking the "Cancel" button in the window.
+     */
     public void returnToMain(ActionEvent actionEvent) throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/klein/firstscreen/view/mainScreen.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource("/klein/c482_project/view/mainScreen.fxml"));
         Scene scene = new Scene(parent);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setTitle("Main Screen");
@@ -126,6 +142,10 @@ public class ModifyPart implements Initializable {
         stage.show();
     }
 
+    /**
+     * Changes window to allow for completion of Outsourced part. Adds a "Company Name" field in place of "Machine ID".
+     * @param actionEvent is related to clicking the "Outsourced" radio button.
+     */
     public void toOutsourced(ActionEvent actionEvent) {
         partSourceLabel.setText("Company Name");
         isOutsourced = true;
@@ -137,6 +157,10 @@ public class ModifyPart implements Initializable {
         }
     }
 
+    /**
+     * Changes window to allow for completion of InHouse part. Adds a "Machine ID" field in place of "Company Name".
+     * @param actionEvent is related to clicking the "InHouse" radio button.
+     */
     public void toInHouse(ActionEvent actionEvent) {
         partSourceLabel.setText("Machine ID");
         isOutsourced = false;
